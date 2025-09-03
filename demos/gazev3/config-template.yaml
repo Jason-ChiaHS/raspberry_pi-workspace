@@ -1,0 +1,89 @@
+log_level: 0
+single_thread: false
+profiling: true
+generate_artifacts:
+  profiling: false
+  output_tensor_and_image: false
+cam:
+  model_path: ./demos/gazev3/weights/gaze_PentaNetV2_LagendaRefine_HumanAll_Compress_1.0_Raspi_480x640_Detection_80_anchorNodes_16bits_20250711104510.rpk
+  width: 2028
+  height: 1520
+  buffer_count: 2
+  inference_data_queue_limit: 10
+show_result:
+  cv2_show_window: false
+  cv2_window_resize_width: 960
+  cv2_window_resize_height: 720
+upload_metadata:
+  client_server_url: http://localhost:8010
+  b64_resize_width: 640
+  b64_resize_height: 480
+  send_frame: true
+
+gaze:
+  score_threshold: 0.4
+  # Misc params
+  draw_trace: true
+
+  # Config to control body face association
+  association:
+    iou_weight: 0.6
+    align_weight: 0.4
+    score_thresh: 0.05
+    min_overall_iou: 0.01
+    min_area_ratio: 0.005
+    max_area_ratio: 0.7
+
+  tracker:
+    # config to controls the bytetracker from supervision
+    bytetracker:
+      track_activation_threshold: 0.25
+      lost_track_buffer: 20
+      minimum_matching_threshold: 0.8
+      frame_rate: 10
+      minimum_consecutive_frames: 2
+    face:
+      face_image_expand_ratio: 0.125 # Used to increase the size of the face image saved for the track
+    accurate_face_threshold: # which to decide on tracks metrics/metadata, if a face is accurate
+      score: 0.75
+      pitch:
+        min: -35
+        max: 35
+      yaw:
+        min: -35
+        max: 35
+    # Used to calculate gaze time
+    gaze:
+      # How many frames we ca miss the gaze, to be considered a gaze
+      lost_buffer: 5 # 0.5s based on 10fps
+    age:
+      # Min and Max no. of age results to get the average
+      min: 5
+      max: 10
+      enhancement:
+        model_path: ./demos/gazev3/weights/mobilenetv4small.onnx
+        face_expand_ratio: 0.125 # Used for the age_enhancement model
+        enable: true # Enabled by default
+    gender:
+      # Min and Max no. of gender results to get the average
+      min: 5
+      max: 10
+    face_reid:
+      enable: true # Determines whether we run face_reid pipeline on the tracker
+      face_expand_ratio: 0.125 # For the ArcFace Input
+      face_embedding_model_path: ./demos/gazev3/weights/w600k_mbf.onnx
+      face_landmark_model_path: ./demos/gazev3/weights/landmark_detection_56.onnx
+      similarity_threshold: 0.4
+      db: "memory"
+
+    max_historical_buffer: 50
+    # Will discard all historical tracks with any missing fields
+    discard_any_empty_historical_tracks: true
+    db: "memory"
+
+  webui:
+    # Track Face Image is resized to this resolution before being encoded
+    # Affects throughput to front-end
+    resized_track_face:
+      width: 100
+      height: 100

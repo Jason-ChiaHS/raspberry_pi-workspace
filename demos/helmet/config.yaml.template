@@ -1,0 +1,51 @@
+log_level: 3 # 3
+single_thread: false
+generate_artifacts:
+  profiling: false
+  output_tensor_and_image: false
+
+cam:
+  model_path: "./demos/helmet/models/network.rpk"
+  width: 2028
+  height: 1520
+  buffer_count: 2
+  inference_data_queue_limit: 10
+
+# For Scripts
+show_result:
+  cv2_show_window: true
+  cv2_window_resize_width: 960
+  cv2_window_resize_height: 720
+
+upload_metadata:
+  client_server_url: "http://localhost:8010"
+  b64_resize_width: 1920
+  b64_resize_height: 1080
+
+helmet:
+  score_threshold: 0.4 # det box with score lower than this will not be drawn on img
+  
+  classes:
+  # Name of classes, this will be used to label the det box
+    0: helmet
+    1: head_with_helmet
+    2: person_with_helmet
+    3: head
+    4: person_no_helmet
+    5: face
+  
+  default_color: [0, 0, 0]
+  colors:
+  # Set the color of box and text for each class in BGR color format,
+  # if no color set, default color (config.helmet.default_color) will be used
+  # set it as empty list [] if not specifying color
+    0: [224, 128, 245]
+    1: []
+    2: [0, 255, 0]
+    3: []
+    4: [0, 0, 255]
+    5: []
+  
+  # det box with label appearing in skip_label will not be drawn on img
+  # set it as empty list [] if drawing all labels
+  skip_label: [1, 3, 5]

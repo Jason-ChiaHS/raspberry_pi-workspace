@@ -1,0 +1,24 @@
+log_level: 0 # 3
+single_thread: false
+profiling: true
+generate_artifacts:
+  profiling: false
+  output_tensor_and_image: false
+
+cam:
+  model_path: "./models/nngaze.rpk"
+  width: 2028
+  height: 1520
+  buffer_count: 2
+  inference_data_queue_limit: 10
+
+# For Scripts
+show_result:
+  cv2_show_window: false
+  cv2_window_resize_width: 960
+  cv2_window_resize_height: 720
+
+upload_metadata:
+  client_server_url: "http://localhost:8010"
+  b64_resize_width: 1920
+  b64_resize_height: 1080

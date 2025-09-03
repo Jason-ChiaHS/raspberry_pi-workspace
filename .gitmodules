@@ -1,0 +1,3 @@
+[submodule "raspi-cam-srv-fork"]
+	path = raspi-cam-srv-fork
+	url = git@pentas-gitlab.southeastasia.cloudapp.azure.com:pentas-member/raspi-cam-srv-fork.git

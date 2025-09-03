@@ -1,0 +1,5 @@
+./weights/
+!./weights/landmark_detection_56.onnx
+!./weights/mobilenetv4small.onnx
+!./weights/network.rpk
+!./weights/w600k_mbf.onnx

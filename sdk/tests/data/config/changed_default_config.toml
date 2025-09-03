@@ -1,0 +1,5 @@
+model_path = "different_model.rpk"
+debug = true
+profiling = true
+width = 1000
+height = 1000

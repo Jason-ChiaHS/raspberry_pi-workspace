@@ -1,0 +1,15 @@
+torch
+torchvision
+onnxruntime==1.20.1 # https://github.com/microsoft/onnxruntime/issues/23957
+requests
+requests-futures
+websockets
+scipy==1.15.3
+omegaconf
+flask
+flask-socketio
+supervision
+scikit-image
+sqlite-vec==0.1.7a2 # https://github.com/asg017/sqlite-vec/issues/159, Fixed in alpha release
+fastapi
+uvicorn

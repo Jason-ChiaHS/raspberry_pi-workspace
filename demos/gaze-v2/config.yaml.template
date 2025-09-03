@@ -1,0 +1,39 @@
+log_level: 3
+single_thread: false
+profiling: true
+generate_artifacts:
+  profiling: false
+  output_tensor_and_image: false
+cam:
+  model_path: ./demos/gaze-v2/models/network.rpk.bak
+  width: 2028
+  height: 1520
+  buffer_count: 2
+  inference_data_queue_limit: 10
+show_result:
+  cv2_show_window: false
+  cv2_window_resize_width: 960
+  cv2_window_resize_height: 720
+upload_metadata:
+  client_server_url: http://localhost:8010
+  b64_resize_width: 1920
+  b64_resize_height: 1080
+  send_frame: true
+gaze:
+  score_threshold: 0.3
+  fixed_track_face_preview: false
+  cv2_track_face_width: 100
+  cv2_track_face_height: 100
+  mobilenet_model_path: "./demos/gaze-v2/models/mobilenetv4small.onnx"
+  skip_mobilenet: false
+  sort:
+    max_age: 40
+    min_hits: 2
+    iou_threshold: 0.3
+    max_distance: 1014
+    body_bbox_min_size: 30
+  face:
+    min_size: 70
+    out_margin: 50
+    pitch_threshold: 90
+    yaw_threshold: 45

@@ -1,0 +1,5 @@
+!models/network.rpk
+!models/mobilenetv4small.onnx
+!models/det_500m.onnx
+!models/landmark_detection_56.onnx
+!models/w600k_mbf.onnx

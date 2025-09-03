@@ -1,0 +1,1 @@
+demo_pipeline_init_path: "./demos/template/__init__.py" # Based off the demo __init__.py location

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% block title %}Photos{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="w3-bar w3-green">
+    <div class="w3-bar-item w3-right" style="padding-top:2px; padding-bottom:0">
+        <div class="w3-tooltip">
+            <span style="position:absolute;right:45px;top:5px;width:200px" class="w3-text w3-tag">Online help from
+                GitHub
+            </span>
+            <img src="{{ url_for('static', filename='onlineHelp.png') }}" class="w3-image" id="onlinehelp"
+                alt="Online help" style="height:34px; width:34px" onclick="onlineHelp()">
+        </div>
+    </div>
+</div>
+<div class="w3-row">
+    <!-- Controls -->
+    <p style="height: 15px; margin:0"></p>
+    <table>
+        <tr>
+            <form method="post" id="pvcontrol" action="{{ url_for('images.control') }}">
+                <td>
+                    Camera:
+                </td>
+                <td>
+                    <select name="camera" id="camera" onchange="dosubmit('pvcontrol')">
+                        {% for cam in cs %}
+                        {% if cam.isUsb == false %}
+                        {% if sc.pvCamera == cam.num %}
+                        <option value="{{ cam.num }}" selected>{{ cam.num }}: {{ cam.model }}</option>
+                        {% else %}
+                        <option value="{{ cam.num }}">{{ cam.num }}: {{ cam.model }}</option>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    &nbsp;From:
+                </td>
+                <td>
+                    <input style="width:100%" type="date" onchange="dosubmit('pvcontrol')" id="pvfrom" name="pvfrom"
+                        value="{{ sc.pvFromStr }}">
+                </td>
+                <td>
+                    &nbsp;To:
+                </td>
+                <td>
+                    <input style="width:100%" type="date" onchange="dosubmit('pvcontrol')" id="pvto" name="pvto"
+                        value="{{ sc.pvToStr }}">
+                </td>
+            </form>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                <form style="display:inline-block" id="setevstartnow" method="post" action="{{ url_for('images.today') }}">
+                    <input class="w3-button w3-sand" type="submit" value="Today">
+                </form>
+            </td>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                <form style="display:inline-block" method="post" action="{{ url_for('images.all') }}">
+                    <input class="w3-button w3-sand" type="submit" value="All">
+                </form>
+            </td>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                <form style="display:inline-block" method="post" action="{{ url_for('images.select_all') }}">
+                    <input style="display:inline-block" class="w3-button w3-green w3-round-xxlarge" type="submit" 
+                        value="Select all">
+                </form>
+            </td>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                <form style="display:inline-block" method="post" action="{{ url_for('images.deselect_all') }}">
+                    <input style="display:inline-block" class="w3-button w3-green w3-round-xxlarge" type="submit"
+                        value="Deselect all">
+                </form>
+            </td>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                <form style="display:inline-block" id="deleteselected" method="post" action="{{ url_for('images.delete_selected') }}">
+                    <input style="display:inline-block" class="w3-button w3-green w3-round-xxlarge" type="submit"
+                        onclick="confirmDelete('deleteselected')" value="Delete">
+                </form>
+            </td>
+            <td>
+                &nbsp;
+            </td>
+            <td>
+                <form style="display:inline-block" id="downloadselected" method="post" action="{{ url_for('images.download_selected') }}">
+                    <input style="display:inline-block" class="w3-button w3-green w3-round-xxlarge" type="submit"
+                        onclick="confirmDownload('downloadselected')" value="Download">
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+<hr>
+<div class="w3-row">
+    <!-- Images and Videos -->
+    <div class="w3-quarter" style="height:1000px; overflow: auto">
+        <!-- Overview tab-->
+        <form method="post" id="pvselect" action="{{ url_for('images.select') }}">
+            <table>
+                {% for entry in sc.pvList %}
+                {% set urlMini=url_for('static', filename=entry['path']) %}
+                {% set urlDetail=url_for('static', filename=entry['detailPath']) %}
+                {% set file=entry['file'] %}
+                {% set name=entry['name'] %}
+                {% set type=entry['type'] %}
+                {% set sel=entry['sel'] %}
+                <tr>
+                    <td style="width: 10%">
+                        {% if sel == True %}
+                        <input form="pvselect" type="checkbox" onchange="dosubmit('pvselect')" id=photo_{{ name }} name=photo_{{ name }} value="1" checked>
+                        {% else %}
+                        <input form="pvselect" type="checkbox" onchange="dosubmit('pvselect')" id=photo_{{ name }} name=photo_{{ name }} value="0">
+                        {% endif %}
+                    </td>
+                    <td style="width: 90%">
+                        <div class="w3-display-container w3-text-white">
+                            <img 
+                                style="width: 100%; height: 110px; object-fit: scale-down"
+                                src="{{ urlMini }}" 
+                                alt="{{ name }}" 
+                                onclick="showDetail('{{ type }}', '{{ urlDetail }}', 'detailphoto', '{{ file }}', '{{ name }}')"
+                            >
+                            <div class="w3-display-bottommiddle w3-container"><p>{{ file }}</p></div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </form>
+    </div>
+    <div class="w3-threequarter">
+        <!-- Detail-->
+        <div id="detailphoto" class="w3-container w3-center">
+        </div>
+
+    </div>
+</div>
+<script>
+    function showDetail(type, url, tgtPhoto, file, name) {
+        var tgtP = document.getElementById(tgtPhoto);
+        if (type != "video") {
+            tag = "<img style='width: 100%; height: 900px; object-fit: scale-down'"
+            tag = tag + " src='" + url + "'"
+            tag = tag + " class='w3-border w3-padding'"
+            tag = tag + " alt='" + name + "'"
+            tag = tag + ">"
+            tag = tag + "<p>" + file + "</p>"
+            //console.log("tag:", tag)
+            tgtP.innerHTML = tag
+        } else {
+            tag = "<video style='width: 100%; height: 900px; object-fit: scale-down'"
+            tag = tag + " class='w3-border w3-padding'"
+            tag = tag + " controls>"
+            tag = tag + "<source src='" + url + "'" + " type='video/mp4'>"
+            tag = tag + "Your browser does not support mp4 video"
+            tag = tag + "</video>"
+            tag = tag + "<p>" + file + "</p>"
+            //console.log("tag:", tag)
+            tgtP.innerHTML = tag
+        }
+    }
+
+    function dosubmit(form) {
+        document.getElementById(form).submit();
+    }
+
+    function confirmDelete(form) {
+        if (confirm("Do you want to permanently delete the selected photos?")) {
+            document.getElementById(form).method = "post";
+            document.getElementById(form).submit();
+        } else {
+            document.getElementById(form).method = "get";
+        }
+    }
+
+    function confirmDownload(form) {
+        if (confirm("Do you want to download the selected photos?")) {
+            document.getElementById(form).method = "post";
+            document.getElementById(form).submit();
+        } else {
+            document.getElementById(form).method = "get";
+        }
+    }
+        function onlineHelp() {
+            window.open("https://github.com/signag/raspi-cam-srv/blob/main/docs/PhotoViewer.md");
+        }
+</script>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+demo_pipeline_init_path: "./demos/gaze/__init__.py" # Based off the demo __init__.py location
+log_level: 3 # Log Level to stdout
+single_thread: false
+profiling: true
+generate_artifacts:
+  profiling: false
+  output_tensor_and_image: false
+
+cam:
+  model_path: "./models/nngaze.rpk" # Network RPK Model to load onto the IMX500
+  # Native Resolution the camera will run at 2K/4K
+  width: 2028
+  height: 1520
+  buffer_count: 2
+  inference_data_queue_limit: 10
+
+# For Scripts
+show_result:
+  # Whether to show the cv2 window with the overlay frame
+  cv2_show_window: false
+  # Size of the cv2 window
+  cv2_window_resize_width: 960
+  cv2_window_resize_height: 720
+
+upload_metadata:
+  client_server_url: "http://localhost:8010"
+  b64_resize_width: 1920
+  b64_resize_height: 1080

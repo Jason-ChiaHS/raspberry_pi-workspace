@@ -1,0 +1,20 @@
+name: raspi-cam-srv
+services:
+  raspi-cam-srv:
+    container_name: raspi-cam-srv
+    build: .
+    image: signag/raspi-cam-srv
+    network_mode: "host"
+    ports:
+      - "5000:5000"
+    devices:
+      - /dev/video0:/dev/video0
+      - /dev/gpiochip0:/dev/gpiochip0
+    volumes:
+      - /run/udev/:/run/udev:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - GPIOZERO_PIN_FACTORY=lgpio
+    restart: unless-stopped
+    privileged: true

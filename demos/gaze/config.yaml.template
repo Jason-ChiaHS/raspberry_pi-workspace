@@ -1,0 +1,50 @@
+log_level: 3
+single_thread: false
+profiling: false
+generate_artifacts:
+  profiling: false
+  output_tensor_and_image: false
+
+cam:
+  model_path: "./demos/gaze/models/nngaze.rpk"
+  width: 2028
+  height: 1520
+  buffer_count: 2
+  inference_data_queue_limit: 10
+
+# For Scripts
+show_result:
+  cv2_show_window: true
+  cv2_window_resize_width: 960
+  cv2_window_resize_height: 720
+
+upload_metadata:
+  client_server_url: "http://localhost:8010"
+  b64_resize_width: 1920
+  b64_resize_height: 1080
+
+gaze:
+  mobilenet_model_path: "./demos/gaze/models/mobilenetv4small.onnx"
+  tflite: true
+  face_detection_expand_ratio: 0.125
+  score_threshold: 0.3
+  nms_threshold: 0.3
+
+  cv2_debug: false
+  cv2_show_body_bbox: true
+  cv2_show_face_bbox: true
+  sort:
+    max_age: 30
+    min_hits: 2
+    iou_threshold: 0.3
+    max_distance: 1014 # 0.5 * max(width, height)
+    body_bbox_min_size: 30
+  gate:
+    line: 520
+    direction: "horizontal" # horizontal / vertical
+  face:
+    min_size: 70
+    out_margin: 50
+  age:
+    pitch_threshold: 90
+    yaw_threshold: 45
